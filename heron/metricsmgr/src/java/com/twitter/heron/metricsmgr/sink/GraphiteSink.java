@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.twitter.heron.common.basics.TypeUtils;
+import com.twitter.heron.spi.metricsmgr.metrics.MetricsFilter;
 import com.twitter.heron.spi.metricsmgr.metrics.MetricsInfo;
 import com.twitter.heron.spi.metricsmgr.metrics.MetricsRecord;
 import com.twitter.heron.spi.metricsmgr.sink.IMetricsSink;
@@ -51,12 +52,15 @@ public class GraphiteSink implements IMetricsSink {
   private static final String SERVER_PORT_KEY = "graphite_port";
   private static final String METRICS_PREFIX = "metrics_prefix";
   private static final String SERVER_MAX_RECONNECT_ATTEMPTS = "server_max_reconnect-attempts";
+  private static final String KEY_TMASTER_METRICS_TYPE = "tmaster-metrics-type";
 
   private String metricsPrefix = null;
   private Graphite graphite = null;
   private String topologyName = null;
+  private final MetricsFilter tMasterMetricsFilter = new MetricsFilter();
 
   @Override
+  @SuppressWarnings("unchecked")
   public void init(Map<String, Object> conf, SinkContext context) {
     LOG.info("Configuration: " + conf.toString());
 
@@ -82,6 +86,15 @@ public class GraphiteSink implements IMetricsSink {
 
     topologyName = context.getTopologyName();
 
+    // Fill the tMasterMetricsFilter according to metrics-sink-configs.yaml
+    Map<String, String> tmasterMetricsType =
+        (Map<String, String>) conf.get(KEY_TMASTER_METRICS_TYPE);
+    if (tmasterMetricsType != null) {
+      for (String metric : tmasterMetricsType.keySet()) {
+        tMasterMetricsFilter.setPrefixToType(metric, MetricsFilter.MetricAggregationType.UNKNOWN);
+      }
+    }
+
     graphite = new Graphite(serverHost, serverPort, maxServerReconnectAttempts);
     graphite.connect();
   }
@@ -104,7 +117,9 @@ public class GraphiteSink implements IMetricsSink {
     // Every data point would look like:
     // {metricsPrefix}.{topologyName}.{host:port/componentName/instanceId}.{metricName}
     //    {metricValue} {timestamp} \n
-    for (MetricsInfo metricsInfo : record.getMetrics()) {
+
+    for (MetricsInfo metricsInfo : tMasterMetricsFilter.filter(record.getMetrics())) {
+      // We would filter out unneeded metrics
       lines.append(
           metricsPathPrefix.toString() + "."
               + metricsInfo.getName().replace(' ', '.')).append(" ")
