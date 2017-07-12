@@ -55,7 +55,8 @@ public interface HealthMgrConstants {
   String SYMPTOM_LARGE_WAIT_Q = LargeWaitQueueDetector.class.getSimpleName();
   String SYMPTOM_SMALL_WAIT_Q = LargeWaitQueueDetector.class.getSimpleName();
   String SYMPTOM_UNDER_PROVISIONING = UnderProvisioningDiagnoser.class.getSimpleName();
-  String SYMPTOM_OVER_PROVISIONING = OverProvisioningDiagnoser.class.getSimpleName();
+  String SYMPTOM_OVER_PROVISIONING_UNSATCOMP = OverProvisioningDiagnoser.class.getSimpleName();
+  String SYMPTOM_OVER_PROVISIONING_SMALLWAITQ = OverProvisioningDiagnoser.class.getSimpleName();
   String SYMPTOM_DATA_SKEW = DataSkewDiagnoser.class.getSimpleName();
   String SYMPTOM_SLOW_INSTANCE = SlowInstanceDiagnoser.class.getSimpleName();
   String SYMPTOM_GROWING_WAIT_Q = GrowingWaitQueueDetector.class.getSimpleName();

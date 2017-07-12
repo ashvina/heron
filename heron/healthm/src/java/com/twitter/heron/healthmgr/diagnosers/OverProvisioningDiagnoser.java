@@ -24,7 +24,10 @@ import com.microsoft.dhalion.diagnoser.Diagnosis;
 import com.microsoft.dhalion.metrics.ComponentMetrics;
 
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.DIAGNOSIS_OVER_PROVISIONING;
-import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_OVER_PROVISIONING;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.
+    SYMPTOM_OVER_PROVISIONING_SMALLWAITQ;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.
+    SYMPTOM_OVER_PROVISIONING_UNSATCOMP;
 
 public class OverProvisioningDiagnoser extends BaseDiagnoser {
   private static final Logger LOG = Logger.getLogger(OverProvisioningDiagnoser.class.getName());
@@ -38,11 +41,13 @@ public class OverProvisioningDiagnoser extends BaseDiagnoser {
 
     if (!unsaturatedComponents.isEmpty()) {
       String component = unsaturatedComponents.keySet().iterator().next();
-      resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING, unsaturatedComponents.get(component));
+      resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING_UNSATCOMP, unsaturatedComponents
+          .get(component));
       LOG.info(String.format("OVER_PROVISIONING: %s is unsaturated", component));
     } else if (!smallWaitQComponents.isEmpty()) {
       String component = smallWaitQComponents.keySet().iterator().next();
-      resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING, smallWaitQComponents.get(component));
+      resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING_SMALLWAITQ, smallWaitQComponents.get(
+          component));
       LOG.info(String.format("OVER_PROVISIONING: %s has a small queue size", component));
     }
     return resultSymptom != null ? new Diagnosis(DIAGNOSIS_OVER_PROVISIONING, resultSymptom) : null;
