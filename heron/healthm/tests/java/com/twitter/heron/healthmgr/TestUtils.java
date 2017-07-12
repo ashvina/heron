@@ -14,16 +14,30 @@
 
 package com.twitter.heron.healthmgr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.microsoft.dhalion.detector.Symptom;
 import com.microsoft.dhalion.metrics.ComponentMetrics;
 import com.microsoft.dhalion.metrics.InstanceMetrics;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_BACK_PRESSURE;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_BUFFER_SIZE;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_EXE_COUNT;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_BACK_PRESSURE;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_LARGE_WAIT_Q;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_PROCESSING_RATE_SKEW;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_SMALL_WAIT_Q;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATED_COMPONENT;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_WAIT_Q_DISPARITY;
 
-import static com.twitter.heron.healthmgr.common.HealthMgrConstants.*;
 
-public class TestUtils {
+public final class TestUtils {
+
+  private TestUtils() {
+
+  }
+
   public static List<Symptom> createBpSymptomList(int... bpValues) {
     return createListFromSymptom(createBPSymptom(bpValues));
   }
@@ -38,6 +52,14 @@ public class TestUtils {
 
   public static Symptom createLargeWaitQSymptom(int... bufferSizes) {
     return createSymptom(SYMPTOM_LARGE_WAIT_Q, METRIC_BUFFER_SIZE, bufferSizes);
+  }
+
+  public static Symptom createSmallWaitQSymptom(int... bufferSizes) {
+    return createSymptom(SYMPTOM_SMALL_WAIT_Q, METRIC_BUFFER_SIZE, bufferSizes);
+  }
+
+  public static Symptom createUnsaturatedComponentSymptom(int... exeCounts) {
+    return createSymptom(SYMPTOM_UNSATURATED_COMPONENT, METRIC_EXE_COUNT, exeCounts);
   }
 
   public static Symptom createBPSymptom(int... bpValues) {

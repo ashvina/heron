@@ -31,27 +31,26 @@ import com.twitter.heron.healthmgr.common.MetricsStats;
 import com.twitter.heron.healthmgr.sensors.BufferSizeSensor;
 
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_BUFFER_SIZE;
-import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_LARGE_WAIT_Q;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_SMALL_WAIT_Q;
 
-public class LargeWaitQueueDetector implements IDetector {
-  public static final String LARGE_WAIT_QUEUE_SIZE_LIMIT = "LargeWaitQueueDetector.limit";
+public class SmallWaitQueueDetector implements IDetector {
+  public static final String SMALL_WAIT_QUEUE_SIZE_LIMIT = "SmallWaitQueueDetector.threshold";
 
-  private static final Logger LOG = Logger.getLogger(LargeWaitQueueDetector.class.getName());
+  private static final Logger LOG = Logger.getLogger(SmallWaitQueueDetector.class.getName());
   private final BufferSizeSensor pendingBufferSensor;
-  private final double sizeLimit;
+  private final double threshold;
 
   @Inject
-  LargeWaitQueueDetector(BufferSizeSensor pendingBufferSensor,
+  SmallWaitQueueDetector(BufferSizeSensor pendingBufferSensor,
                          HealthPolicyConfig policyConfig) {
     this.pendingBufferSensor = pendingBufferSensor;
-    sizeLimit = Double.valueOf(policyConfig.getConfig(LARGE_WAIT_QUEUE_SIZE_LIMIT, "1000"));
+    threshold = Double.valueOf(policyConfig.getConfig(SMALL_WAIT_QUEUE_SIZE_LIMIT, "5"));
   }
 
   /**
-   * Detects all components unable to keep up with input load, hence having a large pending buffer
-   * or wait queue
+   * Detects all components that have small wait queues
    *
-   * @return A collection of all components executing slower than input rate.
+   * @return A collection of all components with small wait queues.
    */
   @Override
   public List<Symptom> detect() {
@@ -61,13 +60,12 @@ public class LargeWaitQueueDetector implements IDetector {
     for (ComponentMetrics compMetrics : bufferSizes.values()) {
       ComponentMetricsHelper compStats = new ComponentMetricsHelper(compMetrics);
       MetricsStats stats = compStats.computeMinMaxStats(METRIC_BUFFER_SIZE);
-      if (stats.getMetricMin() > sizeLimit) {
-        LOG.info(String.format("Detected large wait queues for %s, smallest queue is %f",
-            compMetrics.getName(), stats.getMetricMin()));
-        result.add(new Symptom(SYMPTOM_LARGE_WAIT_Q, compMetrics));
+      if (stats.getMetricMax() <= threshold) {
+        LOG.info(String.format("Detected small wait queues for %s, largest queue is %f",
+            compMetrics.getName(), stats.getMetricMax()));
+        result.add(new Symptom(SYMPTOM_SMALL_WAIT_Q, compMetrics));
       }
     }
-
     return result;
   }
 }

@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 
 import com.microsoft.dhalion.api.IHealthPolicy;
@@ -36,7 +35,11 @@ import com.twitter.heron.spi.statemgr.SchedulerStateManagerAdaptor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class HealthManagerTest {
   @Test
@@ -59,7 +62,7 @@ public class HealthManagerTest {
 
     HealthManager healthManager = new HealthManager(config, "localhost");
 
-    Map policy = new HashMap<>();
+    Map<String, String> policy = new HashMap<String, String>();
     policy.put(HealthMgrConstants.HEALTH_POLICY_CLASS, TestPolicy.class.getName());
     policy.put("test-config", "test-value");
 
@@ -85,16 +88,16 @@ public class HealthManagerTest {
   }
 
   static class TestPolicy extends HealthPolicyImpl {
-    private HealthPolicyConfig config;
     private final ISchedulerClient schedulerClient;
     private final SchedulerStateManagerAdaptor stateMgrAdaptor;
     private final MetricsProvider metricsProvider;
+    private HealthPolicyConfig config;
 
     @Inject
-    public TestPolicy(HealthPolicyConfig config,
-                      ISchedulerClient schedulerClient,
-                      SchedulerStateManagerAdaptor stateMgrAdaptor,
-                      MetricsProvider metricsProvider) {
+    TestPolicy(HealthPolicyConfig config,
+               ISchedulerClient schedulerClient,
+               SchedulerStateManagerAdaptor stateMgrAdaptor,
+               MetricsProvider metricsProvider) {
       this.config = config;
       this.schedulerClient = schedulerClient;
       this.stateMgrAdaptor = stateMgrAdaptor;

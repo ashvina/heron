@@ -29,7 +29,7 @@ import static com.twitter.heron.healthmgr.common.HealthMgrConstants.DIAGNOSIS_UN
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNDER_PROVISIONING;
 
 public class UnderProvisioningDiagnoser extends BaseDiagnoser {
-  private static final Logger LOG = Logger.getLogger(SlowInstanceDiagnoser.class.getName());
+  private static final Logger LOG = Logger.getLogger(UnderProvisioningDiagnoser.class.getName());
 
   @Override
   public Diagnosis diagnose(List<Symptom> symptoms) {

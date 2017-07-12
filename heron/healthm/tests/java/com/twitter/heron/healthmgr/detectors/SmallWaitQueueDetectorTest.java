@@ -27,37 +27,37 @@ import com.twitter.heron.healthmgr.HealthPolicyConfig;
 import com.twitter.heron.healthmgr.sensors.BufferSizeSensor;
 
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_BUFFER_SIZE;
-import static com.twitter.heron.healthmgr.detectors.LargeWaitQueueDetector.LARGE_WAIT_QUEUE_SIZE_LIMIT;
+import static com.twitter.heron.healthmgr.detectors.SmallWaitQueueDetector.
+    SMALL_WAIT_QUEUE_SIZE_LIMIT;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class LargeWaitQueueDetectorTest {
+public class SmallWaitQueueDetectorTest {
   @Test
   public void testConfigAndFilter() {
     HealthPolicyConfig config = mock(HealthPolicyConfig.class);
-    when(config.getConfig(LARGE_WAIT_QUEUE_SIZE_LIMIT, "1000")).thenReturn("20");
+    when(config.getConfig(SMALL_WAIT_QUEUE_SIZE_LIMIT, "5")).thenReturn("5");
 
-    ComponentMetrics compMetrics = new ComponentMetrics("bolt", "i1", METRIC_BUFFER_SIZE, 21);
-
+    ComponentMetrics compMetrics = new ComponentMetrics("bolt", "i1", METRIC_BUFFER_SIZE, 5);
     Map<String, ComponentMetrics> topologyMetrics = new HashMap<>();
     topologyMetrics.put("bolt", compMetrics);
 
     BufferSizeSensor sensor = mock(BufferSizeSensor.class);
     when(sensor.get()).thenReturn(topologyMetrics);
 
-    LargeWaitQueueDetector detector = new LargeWaitQueueDetector(sensor, config);
+    SmallWaitQueueDetector detector = new SmallWaitQueueDetector(sensor, config);
     List<Symptom> symptoms = detector.detect();
 
     assertEquals(1, symptoms.size());
 
-    compMetrics = new ComponentMetrics("bolt", "i1", METRIC_BUFFER_SIZE, 19);
+    compMetrics = new ComponentMetrics("bolt", "i1", METRIC_BUFFER_SIZE, 6);
     topologyMetrics.put("bolt", compMetrics);
 
     sensor = mock(BufferSizeSensor.class);
     when(sensor.get()).thenReturn(topologyMetrics);
 
-    detector = new LargeWaitQueueDetector(sensor, config);
+    detector = new SmallWaitQueueDetector(sensor, config);
     symptoms = detector.detect();
 
     assertEquals(0, symptoms.size());

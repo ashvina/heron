@@ -26,6 +26,8 @@ import com.microsoft.dhalion.metrics.ComponentMetrics;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_BACK_PRESSURE;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_LARGE_WAIT_Q;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_PROCESSING_RATE_SKEW;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_SMALL_WAIT_Q;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATED_COMPONENT;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_WAIT_Q_DISPARITY;
 
 
@@ -44,6 +46,14 @@ public abstract class BaseDiagnoser implements IDiagnoser {
 
   protected Map<String, ComponentMetrics> getLargeWaitQComponents(List<Symptom> symptoms) {
     return getFilteredComponents(symptoms, SYMPTOM_LARGE_WAIT_Q);
+  }
+
+  protected Map<String, ComponentMetrics> getSmallWaitQComponents(List<Symptom> symptoms) {
+    return getFilteredComponents(symptoms, SYMPTOM_SMALL_WAIT_Q);
+  }
+
+  protected Map<String, ComponentMetrics> getUnsaturatedComponents(List<Symptom> symptoms) {
+    return getFilteredComponents(symptoms, SYMPTOM_UNSATURATED_COMPONENT);
   }
 
   private List<Symptom> getFilteredSymptoms(List<Symptom> symptoms, String type) {

@@ -19,8 +19,10 @@ import com.twitter.heron.healthmgr.detectors.BackPressureDetector;
 import com.twitter.heron.healthmgr.detectors.GrowingWaitQueueDetector;
 import com.twitter.heron.healthmgr.detectors.LargeWaitQueueDetector;
 import com.twitter.heron.healthmgr.detectors.ProcessingRateSkewDetector;
+import com.twitter.heron.healthmgr.detectors.UnsaturatedComponentDetector;
 import com.twitter.heron.healthmgr.detectors.WaitQueueDisparityDetector;
 import com.twitter.heron.healthmgr.diagnosers.DataSkewDiagnoser;
+import com.twitter.heron.healthmgr.diagnosers.OverProvisioningDiagnoser;
 import com.twitter.heron.healthmgr.diagnosers.SlowInstanceDiagnoser;
 import com.twitter.heron.healthmgr.diagnosers.UnderProvisioningDiagnoser;
 
@@ -51,13 +53,17 @@ public interface HealthMgrConstants {
   String SYMPTOM_PROCESSING_RATE_SKEW = ProcessingRateSkewDetector.class.getSimpleName();
   String SYMPTOM_WAIT_Q_DISPARITY = WaitQueueDisparityDetector.class.getSimpleName();
   String SYMPTOM_LARGE_WAIT_Q = LargeWaitQueueDetector.class.getSimpleName();
+  String SYMPTOM_SMALL_WAIT_Q = LargeWaitQueueDetector.class.getSimpleName();
   String SYMPTOM_UNDER_PROVISIONING = UnderProvisioningDiagnoser.class.getSimpleName();
+  String SYMPTOM_OVER_PROVISIONING = OverProvisioningDiagnoser.class.getSimpleName();
   String SYMPTOM_DATA_SKEW = DataSkewDiagnoser.class.getSimpleName();
   String SYMPTOM_SLOW_INSTANCE = SlowInstanceDiagnoser.class.getSimpleName();
   String SYMPTOM_GROWING_WAIT_Q = GrowingWaitQueueDetector.class.getSimpleName();
+  String SYMPTOM_UNSATURATED_COMPONENT = UnsaturatedComponentDetector.class.getSimpleName();
 
   // diagnosis names
   String DIAGNOSIS_UNDER_PROVISIONING = UnderProvisioningDiagnoser.class.getSimpleName();
+  String DIAGNOSIS_OVER_PROVISIONING = OverProvisioningDiagnoser.class.getSimpleName();
   String DIAGNOSIS_SLOW_INSTANCE = SlowInstanceDiagnoser.class.getSimpleName();
   String DIAGNOSIS_DATA_SKEW = DataSkewDiagnoser.class.getSimpleName();
 
