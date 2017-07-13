@@ -85,6 +85,8 @@ java_tests(
        "com.twitter.heron.healthmgr.sensors.TrackerMetricsProviderTest",
        "com.twitter.heron.healthmgr.HealthManagerTest",
        "com.twitter.heron.healthmgr.HealthPolicyConfigReaderTest",
+       "com.twitter.heron.healthmgr.resolvers.ScaleDownResolverTest",
+       "com.twitter.heron.healthmgr.resolvers.ScaleUpResolverTest",
      ],
      runtime_deps = [ ":healthmgr-utils" ],
      size = "small",
