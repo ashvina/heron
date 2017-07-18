@@ -35,24 +35,52 @@ public class OverProvisioningDiagnoserTest {
   @Test
   public void diagnosisWhenSmallWaitQueue() {
     List<Symptom> symptoms = new ArrayList<>();
+    symptoms.add(TestUtils.createLowConfUnsaturatedComponentSymptom(100));
     symptoms.add(TestUtils.createSmallWaitQSymptom(1));
     Diagnosis result = new OverProvisioningDiagnoser().diagnose(symptoms);
     validateDiagnosisWithSmallQueue(result);
   }
 
   @Test
-  public void diagnosisWhenUnsaturatedComponent() {
+  public void diagnosisWhenSmallGrowingWaitQueue() {
     List<Symptom> symptoms = new ArrayList<>();
-    symptoms.add(TestUtils.createUnsaturatedComponentSymptom(100));
+    symptoms.add(TestUtils.createLowConfUnsaturatedComponentSymptom(100));
+    symptoms.add(TestUtils.createSmallWaitQSymptom(1));
+    symptoms.add(TestUtils.createGrowingWaitingQueueSymptom(1));
+    Diagnosis result = new OverProvisioningDiagnoser().diagnose(symptoms);
+    assertNull(result);
+  }
+
+  @Test
+  public void diagnosisWhenSmallWaitQueueNoUnsatComp() {
+    List<Symptom> symptoms = new ArrayList<>();
+    symptoms.add(TestUtils.createSmallWaitQSymptom(1));
+    Diagnosis result = new OverProvisioningDiagnoser().diagnose(symptoms);
+    assertNull(result);
+  }
+
+  @Test
+  public void diagnosisWhenHighConfUnsaturatedComponent() {
+    List<Symptom> symptoms = new ArrayList<>();
+    symptoms.add(TestUtils.createHighConfUnsaturatedComponentSymptom(100));
     Diagnosis result = new OverProvisioningDiagnoser().diagnose(symptoms);
     validateDiagnosisWithUnsaturatedComponent(result);
+  }
+
+  @Test
+  public void diagnosisWhenHighConfUnsaturatedComponentWithGrowingQ() {
+    List<Symptom> symptoms = new ArrayList<>();
+    symptoms.add(TestUtils.createHighConfUnsaturatedComponentSymptom(100));
+    symptoms.add(TestUtils.createGrowingWaitingQueueSymptom(1));
+    Diagnosis result = new OverProvisioningDiagnoser().diagnose(symptoms);
+    assertNull(result);
   }
 
   @Test
   public void diagnosisBothSymptoms() {
     List<Symptom> symptoms = new ArrayList<>();
     symptoms.add(TestUtils.createSmallWaitQSymptom(1));
-    symptoms.add(TestUtils.createUnsaturatedComponentSymptom(100));
+    symptoms.add(TestUtils.createHighConfUnsaturatedComponentSymptom(100));
     Diagnosis result = new OverProvisioningDiagnoser().diagnose(symptoms);
     validateDiagnosisWithUnsaturatedComponent(result);
   }

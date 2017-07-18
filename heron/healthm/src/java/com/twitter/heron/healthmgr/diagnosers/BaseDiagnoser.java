@@ -24,10 +24,12 @@ import com.microsoft.dhalion.detector.Symptom;
 import com.microsoft.dhalion.metrics.ComponentMetrics;
 
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_BACK_PRESSURE;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_GROWING_WAIT_Q;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_LARGE_WAIT_Q;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_PROCESSING_RATE_SKEW;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_SMALL_WAIT_Q;
-import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATED_COMPONENT;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATEDCOMP_HIGHCONF;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATEDCOMP_LOWCONF;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_WAIT_Q_DISPARITY;
 
 
@@ -52,8 +54,16 @@ public abstract class BaseDiagnoser implements IDiagnoser {
     return getFilteredComponents(symptoms, SYMPTOM_SMALL_WAIT_Q);
   }
 
-  protected Map<String, ComponentMetrics> getUnsaturatedComponents(List<Symptom> symptoms) {
-    return getFilteredComponents(symptoms, SYMPTOM_UNSATURATED_COMPONENT);
+  protected Map<String, ComponentMetrics> getHighConfUnsaturatedComponents(List<Symptom> symptoms) {
+    return getFilteredComponents(symptoms, SYMPTOM_UNSATURATEDCOMP_HIGHCONF);
+  }
+
+  protected Map<String, ComponentMetrics> getLowConfUnsaturatedComponents(List<Symptom> symptoms) {
+    return getFilteredComponents(symptoms, SYMPTOM_UNSATURATEDCOMP_LOWCONF);
+  }
+
+  protected Map<String, ComponentMetrics> getGrowingWaitQueueComponents(List<Symptom> symptoms) {
+    return getFilteredComponents(symptoms, SYMPTOM_GROWING_WAIT_Q);
   }
 
   private List<Symptom> getFilteredSymptoms(List<Symptom> symptoms, String type) {

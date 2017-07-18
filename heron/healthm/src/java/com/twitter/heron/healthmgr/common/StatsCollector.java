@@ -15,7 +15,9 @@
 package com.twitter.heron.healthmgr.common;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Optional;
@@ -23,7 +25,7 @@ import com.google.common.base.Optional;
 public class StatsCollector {
 
   public Map<String, Double> processingRateStats = new HashMap<>();
-
+  public List<String> backpressureData = new ArrayList<>();
 
   public Optional<Double> getProcessingRateStats(String componentName) {
     if (processingRateStats.containsKey(componentName)) {
@@ -32,5 +34,10 @@ public class StatsCollector {
     return Optional.absent();
   }
 
-
+  public Boolean getBackpressureData(String componentName) {
+    if (backpressureData.contains(componentName)) {
+      return true;
+    }
+    return false;
+  }
 }

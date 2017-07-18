@@ -24,32 +24,44 @@ import com.microsoft.dhalion.diagnoser.Diagnosis;
 import com.microsoft.dhalion.metrics.ComponentMetrics;
 
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.DIAGNOSIS_OVER_PROVISIONING;
-import static com.twitter.heron.healthmgr.common.HealthMgrConstants.
-    SYMPTOM_OVER_PROVISIONING_SMALLWAITQ;
-import static com.twitter.heron.healthmgr.common.HealthMgrConstants.
-    SYMPTOM_OVER_PROVISIONING_UNSATCOMP;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_OVER_PROVISIONING_SMALLWAITQ;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_OVER_PROVISIONING_UNSATCOMP;
 
 public class OverProvisioningDiagnoser extends BaseDiagnoser {
   private static final Logger LOG = Logger.getLogger(OverProvisioningDiagnoser.class.getName());
 
   @Override
   public Diagnosis diagnose(List<Symptom> symptoms) {
-    Map<String, ComponentMetrics> unsaturatedComponents =
-        getUnsaturatedComponents(symptoms);
+    Map<String, ComponentMetrics> highConfUnsaturatedComponents =
+        getHighConfUnsaturatedComponents(symptoms);
+    Map<String, ComponentMetrics> lowConfUnsaturatedComponents =
+        getLowConfUnsaturatedComponents(symptoms);
     Map<String, ComponentMetrics> smallWaitQComponents = getSmallWaitQComponents(symptoms);
+    Map<String, ComponentMetrics> growingWaitQueueComponents =
+        getGrowingWaitQueueComponents(symptoms);
     Symptom resultSymptom = null;
 
-    if (!unsaturatedComponents.isEmpty()) {
-      String component = unsaturatedComponents.keySet().iterator().next();
-      resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING_UNSATCOMP, unsaturatedComponents
-          .get(component));
-      LOG.info(String.format("OVER_PROVISIONING: %s is unsaturated", component));
-    } else if (!smallWaitQComponents.isEmpty()) {
-      String component = smallWaitQComponents.keySet().iterator().next();
-      resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING_SMALLWAITQ, smallWaitQComponents.get(
-          component));
-      LOG.info(String.format("OVER_PROVISIONING: %s has a small queue size", component));
+    if (!highConfUnsaturatedComponents.isEmpty()) {
+      for (String component : highConfUnsaturatedComponents.keySet()) {
+        if (!growingWaitQueueComponents.containsKey(component)) {
+          resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING_UNSATCOMP,
+              highConfUnsaturatedComponents.get(component));
+          LOG.info(String.format("OVER_PROVISIONING: %s is unsaturated", component));
+          continue;
+        }
+      }
+    } else if (!lowConfUnsaturatedComponents.isEmpty()) {
+      for (String component : lowConfUnsaturatedComponents.keySet()) {
+        if (!growingWaitQueueComponents.containsKey(component) && smallWaitQComponents
+            .containsKey(component)) {
+          resultSymptom = new Symptom(SYMPTOM_OVER_PROVISIONING_SMALLWAITQ,
+              smallWaitQComponents.get(component));
+          LOG.info(String.format("OVER_PROVISIONING: %s has a small queue size", component));
+          continue;
+        }
+      }
     }
     return resultSymptom != null ? new Diagnosis(DIAGNOSIS_OVER_PROVISIONING, resultSymptom) : null;
   }
+
 }

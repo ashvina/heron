@@ -25,10 +25,12 @@ import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_BACK_
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_BUFFER_SIZE;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.METRIC_EXE_COUNT;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_BACK_PRESSURE;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_GROWING_WAIT_Q;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_LARGE_WAIT_Q;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_PROCESSING_RATE_SKEW;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_SMALL_WAIT_Q;
-import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATED_COMPONENT;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATEDCOMP_HIGHCONF;
+import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_UNSATURATEDCOMP_LOWCONF;
 import static com.twitter.heron.healthmgr.common.HealthMgrConstants.SYMPTOM_WAIT_Q_DISPARITY;
 
 
@@ -58,8 +60,16 @@ public final class TestUtils {
     return createSymptom(SYMPTOM_SMALL_WAIT_Q, METRIC_BUFFER_SIZE, bufferSizes);
   }
 
-  public static Symptom createUnsaturatedComponentSymptom(int... exeCounts) {
-    return createSymptom(SYMPTOM_UNSATURATED_COMPONENT, METRIC_EXE_COUNT, exeCounts);
+  public static Symptom createHighConfUnsaturatedComponentSymptom(int... exeCounts) {
+    return createSymptom(SYMPTOM_UNSATURATEDCOMP_HIGHCONF, METRIC_EXE_COUNT, exeCounts);
+  }
+
+  public static Symptom createLowConfUnsaturatedComponentSymptom(int... exeCounts) {
+    return createSymptom(SYMPTOM_UNSATURATEDCOMP_LOWCONF, METRIC_EXE_COUNT, exeCounts);
+  }
+
+  public static Symptom createGrowingWaitingQueueSymptom(int... bufferSizes) {
+    return createSymptom(SYMPTOM_GROWING_WAIT_Q, METRIC_BUFFER_SIZE, bufferSizes);
   }
 
   public static Symptom createBPSymptom(int... bpValues) {
