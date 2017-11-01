@@ -75,13 +75,13 @@ public class ScaleUpResolver implements IResolver {
   public List<Action> resolve(List<Diagnosis> diagnosis) {
     for (Diagnosis diagnoses : diagnosis) {
       Symptom bpSymptom = diagnoses.getSymptoms().get(SYMPTOM_UNDER_PROVISIONING.text());
-      if (bpSymptom == null || bpSymptom.getComponentMetrics().getMetrics().isEmpty()) {
+      if (bpSymptom == null || bpSymptom.getComponentMetrics().isEmpty()) {
         // nothing to fix as there is no back pressure
         continue;
       }
 
       ComponentMetrics compMetrics = bpSymptom.getComponentMetrics();
-      if (compMetrics.getComponentNames().size() > 1) {
+      if (compMetrics.getComponentCount() > 1) {
         throw new UnsupportedOperationException("Multiple components with back pressure symptom");
       }
 
@@ -142,7 +142,7 @@ public class ScaleUpResolver implements IResolver {
     double unusedCapacity = (1.0 * totalCompBpTime) / (1000 - totalCompBpTime);
     // scale up fencing: do not scale more than 4 times the current size
     unusedCapacity = unusedCapacity > 4.0 ? 4.0 : unusedCapacity;
-    int parallelism = (int) Math.ceil(componentMetrics.getMetrics().size() * (1 + unusedCapacity));
+    int parallelism = (int) Math.ceil(componentMetrics.size() * (1 + unusedCapacity));
     LOG.info(String.format("Component's, %s, unused capacity is: %.3f. New parallelism: %d",
         compName, unusedCapacity, parallelism));
     return parallelism;

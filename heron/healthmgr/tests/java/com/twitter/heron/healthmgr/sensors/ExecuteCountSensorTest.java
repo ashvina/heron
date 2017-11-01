@@ -53,7 +53,7 @@ public class ExecuteCountSensorTest {
         = new ExecuteCountSensor(topologyProvider, null, metricsProvider);
     executeCountSensor.fetchMetrics();
     ComponentMetrics componentMetrics = executeCountSensor.getMetrics();
-    assertEquals(2, componentMetrics.getComponentNames().size());
+    assertEquals(2, componentMetrics.getComponentCount());
 
     Optional<InstanceMetrics> instanceMetrics
         = componentMetrics.getMetrics("bolt-1", "container_1_bolt-1_1", metric);

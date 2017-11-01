@@ -61,14 +61,14 @@ public class BufferSizeSensorTest {
     bufferSizeSensor.fetchMetrics();
 
     ComponentMetrics componentMetrics = bufferSizeSensor.getMetrics();
-    assertEquals(2, componentMetrics.getComponentNames().size());
+    assertEquals(2, componentMetrics.getComponentCount());
 
-    assertEquals(1, componentMetrics.filterByComponent("bolt-1").getMetrics().size());
+    assertEquals(1, componentMetrics.filterByComponent("bolt-1").size());
     Optional<InstanceMetrics> result
         = componentMetrics.getMetrics("bolt-1", boltIds[0], METRIC_BUFFER_SIZE.text());
     assertEquals(boltIds[0].length(), result.get().getValueSum().intValue());
 
-    assertEquals(2, componentMetrics.filterByComponent("bolt-2").getMetrics().size());
+    assertEquals(2, componentMetrics.filterByComponent("bolt-2").size());
     result
         = componentMetrics.getMetrics("bolt-2", boltIds[1], METRIC_BUFFER_SIZE.text());
     assertEquals(boltIds[1].length(), result.get().getValueSum().intValue());

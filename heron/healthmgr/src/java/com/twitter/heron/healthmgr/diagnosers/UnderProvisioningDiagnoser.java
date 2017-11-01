@@ -37,8 +37,8 @@ public class UnderProvisioningDiagnoser extends BaseDiagnoser {
     ComponentMetrics processingRateSkewMetrics = getProcessingRateSkewComponents(symptoms);
     ComponentMetrics waitQDisparityMetrics = getWaitQDisparityComponents(symptoms);
 
-    if (bpSymptoms.isEmpty() || !processingRateSkewMetrics.getMetrics().isEmpty()
-        || !waitQDisparityMetrics.getMetrics().isEmpty()) {
+    if (bpSymptoms.isEmpty() || !processingRateSkewMetrics.isEmpty()
+        || !waitQDisparityMetrics.isEmpty()) {
       // Since there is no back pressure or similar processing rates
       // and buffer sizes, no action is needed
       return null;
@@ -48,7 +48,7 @@ public class UnderProvisioningDiagnoser extends BaseDiagnoser {
     }
 
     ComponentMetrics bpMetrics = bpSymptoms.iterator().next().getComponentMetrics();
-    if (bpMetrics.getComponentNames().size() != 1) {
+    if (bpMetrics.getComponentCount() != 1) {
       // TODO handle cases where multiple detectors create back pressure symptom
       throw new IllegalStateException("Multiple back-pressure symptoms case");
     }

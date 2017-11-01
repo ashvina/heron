@@ -40,8 +40,8 @@ public class DataSkewDiagnoser extends BaseDiagnoser {
     ComponentMetrics processingRateSkewMetrics = getProcessingRateSkewComponents(symptoms);
     ComponentMetrics waitQDisparityMetrics = getWaitQDisparityComponents(symptoms);
 
-    if (bpSymptoms.isEmpty() || processingRateSkewMetrics.getMetrics().isEmpty()
-        || waitQDisparityMetrics.getMetrics().isEmpty()) {
+    if (bpSymptoms.isEmpty() || processingRateSkewMetrics.isEmpty()
+        || waitQDisparityMetrics.isEmpty()) {
       // Since there is no back pressure or disparate execute count, no action is needed
       return null;
     } else if (bpSymptoms.size() > 1) {
@@ -50,7 +50,7 @@ public class DataSkewDiagnoser extends BaseDiagnoser {
     }
 
     ComponentMetrics bpMetrics = bpSymptoms.iterator().next().getComponentMetrics();
-    if (bpMetrics.getComponentNames().size() != 1) {
+    if (bpMetrics.getComponentCount() != 1) {
       // TODO handle cases where multiple detectors create back pressure symptom
       throw new IllegalStateException("Multiple back-pressure symptoms case");
     }
@@ -59,7 +59,7 @@ public class DataSkewDiagnoser extends BaseDiagnoser {
     // verify data skew, larger queue size and back pressure for the same component exists
     ComponentMetrics exeCountMetrics = processingRateSkewMetrics.filterByComponent(compCausingBp);
     ComponentMetrics pendingBufferMetrics = waitQDisparityMetrics.filterByComponent(compCausingBp);
-    if (exeCountMetrics.getMetrics().isEmpty() || pendingBufferMetrics.getMetrics().isEmpty()) {
+    if (exeCountMetrics.isEmpty() || pendingBufferMetrics.isEmpty()) {
       // no processing rate skew and buffer size skew
       // for the component with back pressure. This is not a data skew case
       return null;
@@ -77,13 +77,13 @@ public class DataSkewDiagnoser extends BaseDiagnoser {
       String compName = boltMetrics.getComponentName();
       String instName = boltMetrics.getInstanceName();
 
-      if (exeCountMetrics.filterByInstance(compName, instName).getMetrics().isEmpty()) {
+      if (exeCountMetrics.filterByInstance(compName, instName).isEmpty()) {
         continue;
       }
       double exeCount = exeCountMetrics.filterByInstance(compName, instName)
           .getMetrics().iterator().next().getValueSum();
 
-      if (pendingBufferMetrics.filterByInstance(compName, instName).getMetrics().isEmpty()) {
+      if (pendingBufferMetrics.filterByInstance(compName, instName).isEmpty()) {
         continue;
       }
       double bufferSize = pendingBufferMetrics.filterByInstance(compName, instName)

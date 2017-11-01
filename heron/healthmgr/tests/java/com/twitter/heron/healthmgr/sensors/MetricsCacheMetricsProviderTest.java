@@ -85,17 +85,17 @@ public class MetricsCacheMetricsProviderTest {
     ComponentMetrics metrics =
         spyMetricsProvider.getComponentMetrics(metric, Duration.ofSeconds(60), comp);
 
-    assertEquals(1, metrics.getComponentNames().size());
-    assertEquals(2, metrics.filterByComponent(comp).getMetrics().size());
+    assertEquals(1, metrics.getComponentCount());
+    assertEquals(2, metrics.filterByComponent(comp).size());
 
     ComponentMetrics result =
         metrics.filterByInstance(comp, "container_1_bolt_1").filterByMetric(metric);
-    assertEquals(1, result.getMetrics().size());
+    assertEquals(1, result.size());
     assertEquals(104, result.getLoneInstanceMetrics().get().getValueSum().intValue());
 
     result =
         metrics.filterByInstance(comp, "container_1_bolt_2").filterByMetric(metric);
-    assertEquals(1, result.getMetrics().size());
+    assertEquals(1, result.size());
     assertEquals(17, result.getLoneInstanceMetrics().get().getValueSum().intValue());
   }
 
@@ -151,18 +151,18 @@ public class MetricsCacheMetricsProviderTest {
     ComponentMetrics metrics
         = spyMetricsProvider.getComponentMetrics(metric, Duration.ofSeconds(60), comp1, comp2);
 
-    assertEquals(2, metrics.getComponentNames().size());
-    assertEquals(1, metrics.filterByComponent(comp1).getMetrics().size());
+    assertEquals(2, metrics.getComponentCount());
+    assertEquals(1, metrics.filterByComponent(comp1).size());
 
     ComponentMetrics result =
         metrics.filterByInstance(comp1, "container_1_bolt-1_2").filterByMetric(metric);
-    assertEquals(1, result.getMetrics().size());
+    assertEquals(1, result.size());
     assertEquals(104, result.getLoneInstanceMetrics().get().getValueSum().intValue());
 
-    assertEquals(1, metrics.filterByComponent(comp2).getMetrics().size());
+    assertEquals(1, metrics.filterByComponent(comp2).size());
     result =
         metrics.filterByInstance(comp2, "container_1_bolt-2_1").filterByMetric(metric);
-    assertEquals(1, result.getMetrics().size());
+    assertEquals(1, result.size());
     assertEquals(17, result.getLoneInstanceMetrics().get().getValueSum().intValue());
   }
 
@@ -190,9 +190,9 @@ public class MetricsCacheMetricsProviderTest {
     ComponentMetrics metrics
         = spyMetricsProvider.getComponentMetrics(metric, Duration.ofSeconds(60), comp);
 
-    assertEquals(1, metrics.getComponentNames().size());
+    assertEquals(1, metrics.getComponentCount());
     assertNotNull(metrics.filterByComponent(comp));
-    assertEquals(1, metrics.filterByComponent(comp).getMetrics().size());
+    assertEquals(1, metrics.filterByComponent(comp).size());
 
     metrics = metrics.filterByInstance(comp, "stmgr-1");
     assertEquals(601, metrics.getLoneInstanceMetrics().get().getValueSum().intValue());
@@ -213,7 +213,7 @@ public class MetricsCacheMetricsProviderTest {
     ComponentMetrics metrics
         = spyMetricsProvider.getComponentMetrics(metric, Duration.ofSeconds(60), comp);
 
-    assertEquals(0, metrics.getComponentNames().size());
+    assertEquals(0, metrics.getComponentCount());
   }
 
   private MetricsCacheMetricsProvider createMetricsProviderSpy() {
@@ -280,13 +280,13 @@ public class MetricsCacheMetricsProviderTest {
     ComponentMetrics metrics = spyMetricsProvider
         .getComponentMetrics(metric, Instant.ofEpochSecond(10), Duration.ofSeconds(60), comp);
 
-    assertEquals(1, metrics.getComponentNames().size());
+    assertEquals(1, metrics.getComponentCount());
     ComponentMetrics compMetrics = metrics.filterByComponent(comp);
-    assertEquals(2, compMetrics.getMetrics().size());
+    assertEquals(2, compMetrics.size());
 
     ComponentMetrics instanceMetrics = compMetrics.filterByInstance(comp, "container_1_bolt_1");
     assertNotNull(instanceMetrics);
-    assertEquals(1, instanceMetrics.getMetrics().size());
+    assertEquals(1, instanceMetrics.size());
 
     Map<Instant, Double> metricValues = instanceMetrics.getLoneInstanceMetrics().get().getValues();
     assertEquals(1, metricValues.size());
@@ -294,7 +294,7 @@ public class MetricsCacheMetricsProviderTest {
 
     instanceMetrics = compMetrics.filterByInstance(comp, "container_1_bolt_2");
     assertNotNull(instanceMetrics);
-    assertEquals(1, instanceMetrics.getMetrics().size());
+    assertEquals(1, instanceMetrics.size());
 
     metricValues = instanceMetrics.getLoneInstanceMetrics().get().getValues();
     assertEquals(3, metricValues.size());

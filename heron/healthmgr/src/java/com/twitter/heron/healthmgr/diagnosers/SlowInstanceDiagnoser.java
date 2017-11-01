@@ -38,8 +38,8 @@ public class SlowInstanceDiagnoser extends BaseDiagnoser {
     ComponentMetrics processingRateSkewComponents = getProcessingRateSkewComponents(symptoms);
     ComponentMetrics waitQDisparityMetrics = getWaitQDisparityComponents(symptoms);
 
-    if (bpSymptoms.isEmpty() || waitQDisparityMetrics.getMetrics().isEmpty()
-        || !processingRateSkewComponents.getMetrics().isEmpty()) {
+    if (bpSymptoms.isEmpty() || waitQDisparityMetrics.isEmpty()
+        || !processingRateSkewComponents.isEmpty()) {
       // Since there is no back pressure or disparate wait count or similar
       // execution count, no action is needed
       return null;
@@ -49,7 +49,7 @@ public class SlowInstanceDiagnoser extends BaseDiagnoser {
     }
 
     ComponentMetrics bpMetrics = bpSymptoms.iterator().next().getComponentMetrics();
-    if (bpMetrics.getComponentNames().size() != 1) {
+    if (bpMetrics.getComponentCount() != 1) {
       // TODO handle cases where multiple detectors create back pressure symptom
       throw new IllegalStateException("Multiple back-pressure symptoms case");
     }
@@ -57,7 +57,7 @@ public class SlowInstanceDiagnoser extends BaseDiagnoser {
 
     // verify wait Q disparity and back pressure for the same component exists
     ComponentMetrics pendingBufferMetrics = waitQDisparityMetrics.filterByComponent(compCausingBp);
-    if (pendingBufferMetrics.getMetrics().isEmpty()) {
+    if (pendingBufferMetrics.isEmpty()) {
       // no wait Q disparity for the component with back pressure. There is no slow instance
       return null;
     }
@@ -72,7 +72,7 @@ public class SlowInstanceDiagnoser extends BaseDiagnoser {
       String compName = boltMetrics.getComponentName();
       String instName = boltMetrics.getInstanceName();
 
-      if (pendingBufferMetrics.filterByInstance(compName, instName).getMetrics().isEmpty()) {
+      if (pendingBufferMetrics.filterByInstance(compName, instName).isEmpty()) {
         continue;
       }
       double bufferSize = pendingBufferMetrics.filterByInstance(compName, instName)

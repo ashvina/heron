@@ -42,7 +42,7 @@ public class ComponentMetricsHelper {
   private double totalBackpressure = 0;
 
   public ComponentMetricsHelper(ComponentMetrics compMetrics) {
-    if (compMetrics.getComponentNames().size() != 1) {
+    if (compMetrics.getComponentCount() != 1) {
       throw new IllegalArgumentException("Only 1 component's metrics allowed");
     }
     this.componentMetrics = compMetrics;

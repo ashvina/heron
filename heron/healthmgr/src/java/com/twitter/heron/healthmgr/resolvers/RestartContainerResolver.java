@@ -64,13 +64,13 @@ public class RestartContainerResolver implements IResolver {
 
     for (Diagnosis diagnoses : diagnosis) {
       Symptom bpSymptom = diagnoses.getSymptoms().get(SYMPTOM_SLOW_INSTANCE.text());
-      if (bpSymptom == null || bpSymptom.getComponentMetrics().getMetrics().isEmpty()) {
+      if (bpSymptom == null || bpSymptom.getComponentMetrics().isEmpty()) {
         // nothing to fix as there is no back pressure
         continue;
       }
 
       ComponentMetrics compMetrics = bpSymptom.getComponentMetrics();
-      if (compMetrics.getComponentNames().size() > 1) {
+      if (compMetrics.getComponentCount() > 1) {
         throw new UnsupportedOperationException("Multiple components with back pressure symptom");
       }
 
